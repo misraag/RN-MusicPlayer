@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useGlobalPlayer } from "../context/PlayerContext";
 import Slider from "@react-native-community/slider";
+import { useRouter } from "expo-router";
 
 export default function MiniPlayer() {
+  const router = useRouter();
   const {
     currentSong,
     isPlaying,
@@ -21,32 +23,37 @@ export default function MiniPlayer() {
   };
 
   return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        padding: 15,
-        backgroundColor: "#222",
-      }}
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => router.push("/player")}
     >
-      <Text style={{ color: "white" }}>{currentSong.title}</Text>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          padding: 15,
+          backgroundColor: "#222",
+        }}
+      >
+        <Text style={{ color: "white" }}>{currentSong.title}</Text>
 
-      <Slider
-        minimumValue={0}
-        maximumValue={duration}
-        value={position}
-        onSlidingComplete={seekTo}
-      />
+        <Slider
+          minimumValue={0}
+          maximumValue={duration}
+          value={position}
+          onSlidingComplete={seekTo}
+        />
 
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ color: "white" }}>{formatTime(position)}</Text>
-        <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ color: "white" }}>{formatTime(position)}</Text>
+          <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
+        </View>
+
+        <TouchableOpacity onPress={togglePlayPause}>
+          <Text style={{ color: "white" }}>{isPlaying ? "Pause" : "Play"}</Text>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity onPress={togglePlayPause}>
-        <Text style={{ color: "white" }}>{isPlaying ? "Pause" : "Play"}</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
