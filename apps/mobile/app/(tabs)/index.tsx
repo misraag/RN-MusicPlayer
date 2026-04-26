@@ -3,12 +3,22 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Song } from "@/hooks/usePlayer";
 import { useGlobalPlayer } from "@/context/PlayerContext";
 import { TextInput } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function HomeScreen() {
   const [songs, setSongs] = useState<Song[]>([]);
   const { currentSong, isPlaying, playSong, togglePlayPause } =
     useGlobalPlayer();
   const [search, setSearch] = useState("");
+
+  useFocusEffect(
+  useCallback(() => {
+    fetch(`http://172.20.10.11:3000/songs`)
+      .then(res => res.json())
+      .then(data => setSongs(data));
+  }, [])
+);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
