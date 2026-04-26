@@ -15,6 +15,8 @@ export const usePlayer = () => {
   const [duration, setDuration] = useState(0);
   const [queue, setQueue] = useState<Song[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [repeatMode, setRepeatMode] = useState<"off" | "all" | "one">("off");
+  const [isShuffle, setIsShuffle] = useState(false);
 
   const soundRef = useRef<Audio.Sound | null>(null);
 
@@ -55,19 +57,65 @@ export const usePlayer = () => {
   };
 
   const playNext = async () => {
+    if (queue.length === 0) return;
+
+    // 🔀 Shuffle mode
+    if (isShuffle) {
+      const randomIndex = Math.floor(Math.random() * queue.length);
+      const nextSong = queue[randomIndex];
+      setCurrentIndex(randomIndex);
+      await playSong(nextSong, queue);
+      return;
+    }
+
+    // 🔁 Repeat one
+    if (repeatMode === "one") {
+      await playSong(queue[currentIndex], queue);
+      return;
+    }
+
+    // Normal next
     if (currentIndex < queue.length - 1) {
       const nextSong = queue[currentIndex + 1];
       setCurrentIndex(currentIndex + 1);
       await playSong(nextSong, queue);
     }
+    // 🔁 Repeat all
+    else if (repeatMode === "all") {
+      const nextSong = queue[0];
+      setCurrentIndex(0);
+      await playSong(nextSong, queue);
+    }
   };
 
   const playPrevious = async () => {
+    if (queue.length === 0) return;
+
+    if (isShuffle) {
+      const randomIndex = Math.floor(Math.random() * queue.length);
+      const prevSong = queue[randomIndex];
+      setCurrentIndex(randomIndex);
+      await playSong(prevSong, queue);
+      return;
+    }
+
     if (currentIndex > 0) {
       const prevSong = queue[currentIndex - 1];
       setCurrentIndex(currentIndex - 1);
       await playSong(prevSong, queue);
     }
+  };
+
+  const toggleShuffle = () => {
+    setIsShuffle((prev) => !prev);
+  };
+
+  const cycleRepeatMode = () => {
+    setRepeatMode((prev) => {
+      if (prev === "off") return "all";
+      if (prev === "all") return "one";
+      return "off";
+    });
   };
 
   const togglePlayPause = async () => {
@@ -98,5 +146,9 @@ export const usePlayer = () => {
     seekTo,
     playNext,
     playPrevious,
+    isShuffle,
+    toggleShuffle,
+    repeatMode,
+    cycleRepeatMode,
   };
 };

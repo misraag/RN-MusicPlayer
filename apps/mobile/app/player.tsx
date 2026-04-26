@@ -12,6 +12,10 @@ export default function PlayerScreen() {
     seekTo,
     playNext,
     playPrevious,
+    isShuffle,
+    toggleShuffle,
+    repeatMode,
+    cycleRepeatMode,
   } = useGlobalPlayer();
 
   if (!currentSong) {
@@ -72,6 +76,22 @@ export default function PlayerScreen() {
         <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
       </View>
 
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 20,
+        }}
+      >
+        <TouchableOpacity onPress={toggleShuffle}>
+          <Text style={{ color: isShuffle ? "green" : "white" }}>Shuffle</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={cycleRepeatMode}>
+          <Text style={{ color: "white" }}>Repeat: {repeatMode}</Text>
+        </TouchableOpacity>
+      </View>
+      
       {/* Controls */}
       <View
         style={{
