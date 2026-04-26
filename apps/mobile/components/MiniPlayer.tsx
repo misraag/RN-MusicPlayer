@@ -1,10 +1,13 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import { useGlobalPlayer } from "../context/PlayerContext";
-import Slider from "@react-native-community/slider";
-import { useRouter } from "expo-router";
+import { View, Text, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import Slider from '@react-native-community/slider';
+
+import { useGlobalPlayer } from '@/context/PlayerContext';
 
 export default function MiniPlayer() {
   const router = useRouter();
+
   const {
     currentSong,
     isPlaying,
@@ -19,41 +22,83 @@ export default function MiniPlayer() {
   const formatTime = (millis: number) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = Math.floor((millis % 60000) / 1000);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={() => router.push("/player")}
+    <Pressable
+      onPress={() => router.push('/player')}
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: '#121212',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderTopWidth: 0.5,
+        borderTopColor: '#333',
+      }}
     >
+      {/* Top Row */}
       <View
         style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          padding: 15,
-          backgroundColor: "#222",
+          flexDirection: 'row',
+          alignItems: 'center',
         }}
       >
-        <Text style={{ color: "white" }}>{currentSong.title}</Text>
-
-        <Slider
-          minimumValue={0}
-          maximumValue={duration}
-          value={position}
-          onSlidingComplete={seekTo}
-        />
-
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: "white" }}>{formatTime(position)}</Text>
-          <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
+        {/* Song Info */}
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: 'white' }} numberOfLines={1}>
+            {currentSong.title}
+          </Text>
+          <Text style={{ color: 'gray', fontSize: 12 }} numberOfLines={1}>
+            {currentSong.artist}
+          </Text>
         </View>
 
-        <TouchableOpacity onPress={togglePlayPause}>
-          <Text style={{ color: "white" }}>{isPlaying ? "Pause" : "Play"}</Text>
-        </TouchableOpacity>
+        {/* Play/Pause Button */}
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation(); // prevent opening player
+            togglePlayPause();
+          }}
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.6 : 1,
+          })}
+        >
+          <Ionicons
+            name={isPlaying ? 'pause' : 'play'}
+            size={24}
+            color="white"
+          />
+        </Pressable>
       </View>
-    </TouchableOpacity>
+
+      {/* Progress Bar */}
+      <Slider
+        minimumValue={0}
+        maximumValue={duration || 1}
+        value={position}
+        onSlidingComplete={seekTo}
+        minimumTrackTintColor="#1DB954"
+        maximumTrackTintColor="#555"
+        thumbTintColor="#1DB954"
+      />
+
+      {/* Time Row */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Text style={{ color: 'gray', fontSize: 10 }}>
+          {formatTime(position)}
+        </Text>
+        <Text style={{ color: 'gray', fontSize: 10 }}>
+          {formatTime(duration)}
+        </Text>
+      </View>
+    </Pressable>
   );
 }

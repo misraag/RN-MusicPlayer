@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import Slider from "@react-native-community/slider";
 import { useGlobalPlayer } from "@/context/PlayerContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function PlayerScreen() {
   const {
@@ -76,6 +77,7 @@ export default function PlayerScreen() {
         <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
       </View>
 
+      {/* Shuffle and Repeat */}
       <View
         style={{
           flexDirection: "row",
@@ -84,34 +86,51 @@ export default function PlayerScreen() {
         }}
       >
         <TouchableOpacity onPress={toggleShuffle}>
-          <Text style={{ color: isShuffle ? "green" : "white" }}>Shuffle</Text>
+          <Ionicons
+            name="shuffle"
+            size={24}
+            color={isShuffle ? "#1DB954" : "white"}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={cycleRepeatMode}>
-          <Text style={{ color: "white" }}>Repeat: {repeatMode}</Text>
+          <Ionicons
+            name={
+              repeatMode === "one"
+                ? "repeat-outline"
+                : repeatMode === "all"
+                  ? "repeat"
+                  : "repeat-outline"
+            }
+            size={24}
+            color={repeatMode !== "off" ? "#1DB954" : "white"}
+          />
         </TouchableOpacity>
       </View>
-      
+
       {/* Controls */}
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-around",
+          alignItems: "center",
           marginTop: 30,
         }}
       >
         <TouchableOpacity onPress={playPrevious}>
-          <Text style={{ color: "white", fontSize: 20 }}>Prev</Text>
+          <Ionicons name="play-skip-back" size={32} color="white" />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={togglePlayPause}>
-          <Text style={{ color: "white", fontSize: 24 }}>
-            {isPlaying ? "Pause" : "Play"}
-          </Text>
+          <Ionicons
+            name={isPlaying ? "pause-circle" : "play-circle"}
+            size={64}
+            color="white"
+          />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={playNext}>
-          <Text style={{ color: "white", fontSize: 20 }}>Next</Text>
+          <Ionicons name="play-skip-forward" size={32} color="white" />
         </TouchableOpacity>
       </View>
     </View>
