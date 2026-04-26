@@ -16,7 +16,7 @@ export default function HomeScreen() {
    return (
     <View style={{ marginTop: 50, backgroundColor: '#fff', flex: 1, alignItems: 'center' }}>
       {songs.map(song => (
-        <TouchableOpacity key={song.id} onPress={() => playSong(song)}>
+        <TouchableOpacity key={song.id} onPress={() => playSong(song, songs)}>
           <Text>{song.title}</Text>
         </TouchableOpacity>
       ))}

@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { useGlobalPlayer } from '@/context/PlayerContext';
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import Slider from "@react-native-community/slider";
+import { useGlobalPlayer } from "@/context/PlayerContext";
 
 export default function PlayerScreen() {
   const {
@@ -10,11 +10,13 @@ export default function PlayerScreen() {
     position,
     duration,
     seekTo,
+    playNext,
+    playPrevious,
   } = useGlobalPlayer();
 
   if (!currentSong) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>No song playing</Text>
       </View>
     );
@@ -23,25 +25,25 @@ export default function PlayerScreen() {
   const formatTime = (millis: number) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = Math.floor((millis % 60000) / 1000);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: "#000",
         padding: 20,
-        justifyContent: 'center',
+        justifyContent: "center",
       }}
     >
       {/* Album Art */}
       <Image
         source={{
-          uri: 'https://via.placeholder.com/300',
+          uri: "https://via.placeholder.com/300",
         }}
         style={{
-          width: '100%',
+          width: "100%",
           height: 300,
           borderRadius: 10,
           marginBottom: 30,
@@ -49,11 +51,11 @@ export default function PlayerScreen() {
       />
 
       {/* Song Info */}
-      <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>
+      <Text style={{ color: "white", fontSize: 22, fontWeight: "bold" }}>
         {currentSong.title}
       </Text>
 
-      <Text style={{ color: 'gray', marginBottom: 20 }}>
+      <Text style={{ color: "gray", marginBottom: 20 }}>
         {currentSong.artist}
       </Text>
 
@@ -65,23 +67,31 @@ export default function PlayerScreen() {
         onSlidingComplete={seekTo}
       />
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: 'white' }}>{formatTime(position)}</Text>
-        <Text style={{ color: 'white' }}>{formatTime(duration)}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ color: "white" }}>{formatTime(position)}</Text>
+        <Text style={{ color: "white" }}>{formatTime(duration)}</Text>
       </View>
 
       {/* Controls */}
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
+          flexDirection: "row",
+          justifyContent: "space-around",
           marginTop: 30,
         }}
       >
+        <TouchableOpacity onPress={playPrevious}>
+          <Text style={{ color: "white", fontSize: 20 }}>Prev</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={togglePlayPause}>
-          <Text style={{ color: 'white', fontSize: 24 }}>
-            {isPlaying ? 'Pause' : 'Play'}
+          <Text style={{ color: "white", fontSize: 24 }}>
+            {isPlaying ? "Pause" : "Play"}
           </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={playNext}>
+          <Text style={{ color: "white", fontSize: 20 }}>Next</Text>
         </TouchableOpacity>
       </View>
     </View>
