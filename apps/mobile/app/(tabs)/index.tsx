@@ -1,10 +1,11 @@
 import {useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { usePlayer, Song } from '@/hooks/usePlayer';
+import { Song } from '@/hooks/usePlayer';
+import { useGlobalPlayer } from '@/context/PlayerContext';
 
 export default function HomeScreen() {
   const [songs, setSongs] = useState<Song[]>([]);
-  const { currentSong, isPlaying, playSong, togglePlayPause } = usePlayer();
+  const { currentSong, isPlaying, playSong, togglePlayPause } = useGlobalPlayer();
 
   useEffect(() => {
     fetch('http://172.20.10.11:3000/songs')

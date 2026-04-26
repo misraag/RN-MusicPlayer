@@ -11,6 +11,8 @@ export type Song = {
 export const usePlayer = () => {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const soundRef = useRef<Audio.Sound | null>(null);
 
@@ -23,7 +25,14 @@ export const usePlayer = () => {
       const { sound } = await Audio.Sound.createAsync(
         { uri: song.url },
         { shouldPlay: true }
-      );
+     );
+
+      sound.setOnPlaybackStatusUpdate((status: any) => {
+        if (status.isLoaded) {
+            setPosition(status.positionMillis);
+            setDuration(status.durationMillis || 0);
+        }
+    });
 
       soundRef.current = sound;
       setCurrentSong(song);
@@ -45,10 +54,20 @@ export const usePlayer = () => {
     }
   };
 
+    const seekTo = async (value: number) => {
+     if (soundRef.current) {
+        await soundRef.current.setPositionAsync(value);
+     }
+    };
+
     return {
         currentSong,
         isPlaying,
         playSong,
         togglePlayPause,
+        position,
+        duration,
+        soundRef,
+        seekTo,
     };
 }
